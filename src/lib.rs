@@ -292,11 +292,22 @@ pub fn cmd_report(dir: &Path) -> Result<String, String> {
         .iter()
         .filter(|c| c.get("covered-by").is_some())
         .count();
+    let mut failures: Vec<(&Case, &Record)> = Vec::new();
+    let mut recent: Vec<(&Case, &Record)> = Vec::new();
+    for c in &cases {
+        for r in &c.records {
+            if r.result == "fail" {
+                failures.push((c, r));
+            }
+            recent.push((c, r));
+        }
+    }
     out.push_str(&format!(
         "\nTotal: {total} | reviewed: {reviewed} | draft: {}\n\
-         Manual: {manual} | scripted: {} | automated coverage: {covered}\n\n",
+         Manual: {manual} | scripted: {} | automated coverage: {covered} | failures: {}\n\n",
         total - reviewed,
         total - manual,
+        failures.len(),
     ));
     out.push_str("| case | title | status | mode | covered-by | last run |\n");
     out.push_str("|------|-------|--------|------|------------|----------|\n");
@@ -326,6 +337,43 @@ pub fn cmd_report(dir: &Path) -> Result<String, String> {
                 "- {} — {}\n",
                 esc(c.get("id").unwrap_or("")),
                 esc(c.get("title").unwrap_or(""))
+            ));
+        }
+    }
+    if !failures.is_empty() {
+        out.push_str("\n## Failures (need triage)\n");
+        for (c, r) in &failures {
+            out.push_str(&format!(
+                "- {} | {} | {}{}\n",
+                esc(c.get("id").unwrap_or("")),
+                r.date,
+                r.category.as_deref().unwrap_or(""),
+                r.note
+                    .as_deref()
+                    .map(|n| format!(" | {}", esc(n)))
+                    .unwrap_or_default()
+            ));
+        }
+    }
+    let mut recent: Vec<(&Case, &Record)> = recent;
+    recent.sort_by(|a, b| b.1.date.cmp(&a.1.date));
+    recent.truncate(10);
+    if !recent.is_empty() {
+        out.push_str("\n## Recent executions\n");
+        for (c, r) in &recent {
+            out.push_str(&format!(
+                "- {} | {} | {}{}{}\n",
+                r.date,
+                esc(c.get("id").unwrap_or("")),
+                r.result,
+                r.category
+                    .as_deref()
+                    .map(|cat| format!(" | {cat}"))
+                    .unwrap_or_default(),
+                r.note
+                    .as_deref()
+                    .map(|n| format!(" | {}", esc(n)))
+                    .unwrap_or_default()
             ));
         }
     }

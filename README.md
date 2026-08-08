@@ -89,7 +89,7 @@ opencase record <id> --result pass
 opencase report                    # status / coverage / latest runs
 ```
 
-The repo also ships two example cases (`cases/`) and script stubs (`tests/`); `validate` should report `2 case(s), 0 problem(s)`.
+The repo ships 5 dogfood cases (`cases/`) that test OpenCase against itself; `validate` should report `5 case(s), 0 problem(s)`.
 
 ## Case format
 

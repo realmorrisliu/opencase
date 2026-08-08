@@ -1,7 +1,7 @@
 ---
 id: cli-report
 title: report renders status, coverage and latest runs as markdown
-status: reviewed
+status: draft
 mode: manual
 source: docs/PRD.md — "Reporting"
 ---
@@ -16,7 +16,9 @@ source: docs/PRD.md — "Reporting"
 - Output is valid markdown: `# Opencase Report` heading, a counts line (Total/reviewed/draft), a coverage line (Manual/scripted/automated coverage), and a table with header separator
 - The reviewed case's row shows `pass` and the record date; the draft case's row shows `—` for last run
 - The draft case appears in the `## Draft (need review)` section
-- The counts line reads exactly `Total: 2 | reviewed: 1 | draft: 1` and the coverage line reads `Manual: 2 | scripted: 0 | automated coverage: 0`
+- The counts line reads exactly `Total: 2 | reviewed: 1 | draft: 1`, the coverage line reads `Manual: 2 | scripted: 0 | automated coverage: 0`, and the summary line ends with `| failures: 0`
+- A `## Recent executions` section lists the pass record (date, case id, result)
+- No `## Failures` section appears when no failed records exist
 
 ## Executions
 

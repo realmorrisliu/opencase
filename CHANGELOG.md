@@ -34,3 +34,9 @@ All notable changes to this project will be documented in this file.
 
 - Release pipeline: dropped Intel Mac (darwin-x86_64) builds; added keyless build provenance attestations (`actions/attest`) to release binaries
 - crates.io publish is idempotent (skips when the version already exists)
+
+## [Unreleased]
+
+### Added
+
+- `report` now surfaces run-level detail: failures count in the summary line, a `## Failures (need triage)` drill-down (case, date, category, note), and a `## Recent executions` list (latest 10 records across cases)

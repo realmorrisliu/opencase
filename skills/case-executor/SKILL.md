@@ -40,6 +40,23 @@ Scripted results belong to CI; `record` will refuse them — that is by design, 
 3. Produce an "observed vs expected" diff report for the user. **Do not record.**
 4. Product defect found → file a gh issue per the flow above; case/script out of sync with reality → tell the user to consider updating the case or the script.
 
+## Wrap-up: the execution report
+
+After recording the last case, deliver a run summary — this is the test
+report a QA lead reads. It must state, concretely:
+
+- **Executed**: N cases (ids), in which environment/commits
+- **Results**: passed X / failed Y — every failure with its category and
+  note, not just a count
+- **Issues found and how they were handled**: fixed on the spot (with the
+  fix reference), filed as a gh issue, or deferred — never silent
+- **Test-bug candidates**: any expectation that proved wrong during
+  execution, flagged for the review session to fix
+
+If the run found problems that were fixed before recording, say so — a
+"5 passed" summary that hides "3 bugs found and fixed" is a lie by
+omission.
+
 ## Discipline
 
 - When unsure, execute — observations come from execution; when an observation is unclear, re-run, don't guess

@@ -47,7 +47,6 @@ fn full_loop_smoke() {
     let repo = Path::new(env!("CARGO_MANIFEST_DIR"));
     let d = tmpdir("full-loop");
     copy_dir(&repo.join("cases"), &d.join("cases"));
-    copy_dir(&repo.join("tests"), &d.join("tests"));
     let cases = d.join("cases");
 
     // validate the shipped examples

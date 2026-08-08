@@ -89,7 +89,7 @@ opencase record <id> --result pass
 opencase report                    # 状态/覆盖率/最近执行
 ```
 
-仓库自带两个示例 case（`cases/`）和脚本 stub（`tests/`），`validate` 应为 `2 case(s), 0 problem(s)`。
+仓库自带 5 个 dogfood case（`cases/`），用 OpenCase 测试它自己；`validate` 应为 `5 case(s), 0 problem(s)`。
 
 ## Case 格式
 
