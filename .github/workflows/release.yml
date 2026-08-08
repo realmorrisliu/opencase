@@ -55,10 +55,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: Publish to crates.io
+      - name: Publish to crates.io (idempotent)
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        run: cargo publish --locked
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if curl -fsSL https://index.crates.io/op/e/opencase | grep -q '"vers":"'"$VERSION"'"'; then
+            echo "opencase $VERSION already published — skipping"
+          else
+            cargo publish --locked
+          fi
 
   release:
     needs: [build, publish]
