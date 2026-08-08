@@ -1,6 +1,6 @@
 #!/bin/sh
 # OpenCase installer — downloads the latest pre-built binary from GitHub
-# Releases. No Rust toolchain required.
+# Releases, verified against its SHA-256 checksum. No Rust toolchain required.
 #
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/realmorrisliu/opencase/main/install.sh | sh
@@ -23,9 +23,11 @@ case "$os" in
   *) echo "unsupported OS: $os (Windows users: download the binary from the releases page)" >&2; exit 1 ;;
 esac
 
-# normalise: the release asset uses darwin, but uname says darwin already
-url="https://github.com/$REPO/releases/${VERSION}/download/opencase-${os}-${arch}"
-[ "$VERSION" = "latest" ] && url="https://github.com/$REPO/releases/latest/download/opencase-${os}-${arch}"
+if [ "$VERSION" = "latest" ]; then
+  url="https://github.com/$REPO/releases/latest/download/opencase-${os}-${arch}"
+else
+  url="https://github.com/$REPO/releases/${VERSION}/download/opencase-${os}-${arch}"
+fi
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -36,8 +38,16 @@ if command -v curl >/dev/null 2>&1; then
 else
   wget -q "$url" -O "$tmp/opencase"
 fi
-chmod +x "$tmp/opencase"
 
+echo "Verifying SHA-256 checksum"
+if command -v curl >/dev/null 2>&1; then
+  curl -fsSL "$url.sha256" -o "$tmp/opencase.sha256"
+else
+  wget -q "$url.sha256" -O "$tmp/opencase.sha256"
+fi
+(cd "$tmp" && shasum -a 256 -c opencase.sha256)
+
+chmod +x "$tmp/opencase"
 if install -m 755 "$tmp/opencase" "$DEST/opencase" 2>/dev/null; then
   echo "Installed opencase to $DEST/opencase"
 else
@@ -46,4 +56,4 @@ else
   echo "Installed opencase to $DEST/opencase"
 fi
 
-echo "Next: run 'opencase init' in your repo, then 'opencase validate'"
+echo "Next: run 'opencase init' in your repo, then 'opencase skill install'"
