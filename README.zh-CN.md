@@ -164,10 +164,7 @@ case-writer 根据 PRD 写 case → case-reviewer 开 review 会话（你决策�
 
 ## 参与贡献
 
-- 设计决策都落在 `docs/PRD.md`——改动格式、状态机、门之前先读它
-- 工具刻意保持薄；优先最小改动
-- 任何触及 case 格式契约或状态机的事，先开 issue
-- 提 PR 前跑 `cargo test`（单元 + 端到端冒烟）和 `cargo clippy -- -D warnings`
+见 [CONTRIBUTING.md](CONTRIBUTING.md)——设计决策都落在 [`docs/PRD.md`](docs/PRD.md)，改动格式、状态机、门之前先读它。工具刻意保持薄，优先最小改动。安全问题按 [SECURITY.md](SECURITY.md) 私下报告。社区规范：[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
 
 ## 开发
 
@@ -178,3 +175,7 @@ cargo test    # 单元测试 + 端到端冒烟（tests/smoke.rs 驱动真实二�
 ## License
 
 MIT — 见 [LICENSE](LICENSE)。
+
+---
+
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [SECURITY.md](SECURITY.md)

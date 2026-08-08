@@ -164,10 +164,7 @@ case-writer  writes cases from a PRD → case-reviewer runs the review session (
 
 ## Contributing
 
-- Design decisions live in `docs/PRD.md` — read it before proposing changes to the format, the state machine, or the gates
-- The tool is deliberately thin; prefer the smallest change that works
-- Open an issue first for anything that touches the case format contract or the state machine
-- Run `cargo test` (unit + end-to-end smoke) and `cargo clippy -- -D warnings` before opening a PR
+See [CONTRIBUTING.md](CONTRIBUTING.md) — design decisions live in [`docs/PRD.md`](docs/PRD.md); read it before touching the format, the state machine, or the gates. The tool is deliberately thin; prefer the smallest change that works. Report security issues privately per [SECURITY.md](SECURITY.md). Community standards: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Development
 
@@ -178,3 +175,7 @@ cargo test    # unit tests + end-to-end smoke (tests/smoke.rs drives the real bi
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+---
+
+[CONTRIBUTING.md](CONTRIBUTING.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) · [SECURITY.md](SECURITY.md)
