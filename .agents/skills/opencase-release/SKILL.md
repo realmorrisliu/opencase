@@ -1,6 +1,6 @@
 ---
 name: opencase-release
-description: Prepare and publish a new OpenCase release: bump Cargo.toml version, update CHANGELOG.md, PR-first into protected main, then tag v<version> — the release workflow verifies, publishes to crates.io, and builds the four platform binaries. Use when asked to cut a release, bump the version, publish to crates.io, or update the changelog.
+description: Prepare and publish a new OpenCase release: bump Cargo.toml version, update CHANGELOG.md, PR-first into protected main, then tag v<version> — the release workflow verifies, publishes to crates.io, and builds the platform binaries. Use when asked to cut a release, bump the version, publish to crates.io, or update the changelog.
 ---
 
 # OpenCase Release
