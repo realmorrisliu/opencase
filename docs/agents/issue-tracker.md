@@ -1,19 +1,18 @@
-# Issue tracker: Local Markdown
+# Issue tracker: GitHub
 
-Issues and PRDs for this repo live as markdown files in `.scratch/`.
+Issues and PRDs for this repo live in the GitHub issue tracker at https://github.com/realmorrisliu/opencase/issues.
 
 ## Conventions
 
-- One feature per directory: `.scratch/<feature-slug>/`
-- The PRD is `.scratch/<feature-slug>/PRD.md`
-- Implementation issues are `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`
-- Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
-- Comments and conversation history append to the bottom of the file under a `## Comments` heading
+- One feature per issue (or a parent issue with child issues for large features)
+- PRDs are published as issues, tagged `ready-for-agent` — no additional triage needed
+- Triage state is tracked with GitHub labels (see `triage-labels.md` for the role strings)
+- Comments and conversation history live in the issue thread
 
 ## When a skill says "publish to the issue tracker"
 
-Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).
+`gh issue create` with the appropriate triage label.
 
 ## When a skill says "fetch the relevant ticket"
 
-Read the file at the referenced path. The user will normally pass the path or the issue number directly.
+`gh issue view <number>`.

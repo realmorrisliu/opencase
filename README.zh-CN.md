@@ -164,7 +164,7 @@ case-writer 根据 PRD 写 case → case-reviewer 开 review 会话（你决策�
 
 ## 参与贡献
 
-- 设计决策都落在 `.scratch/opencase/PRD.md`——改动格式、状态机、门之前先读它
+- 设计决策都落在 `docs/PRD.md`——改动格式、状态机、门之前先读它
 - 工具刻意保持薄；优先最小改动
 - 任何触及 case 格式契约或状态机的事，先开 issue
 - 提 PR 前跑 `cargo test`（单元 + 端到端冒烟）和 `cargo clippy -- -D warnings`

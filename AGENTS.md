@@ -6,7 +6,7 @@ Declarative test-case management convention. Test cases are git-managed declarat
 
 ### Issue tracker
 
-Issues and PRDs live as local markdown files under `.scratch/`. See `docs/agents/issue-tracker.md`.
+Issues and PRDs live in GitHub Issues (`gh issue create`; triage via labels). See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 

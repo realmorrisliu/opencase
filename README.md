@@ -164,7 +164,7 @@ case-writer  writes cases from a PRD → case-reviewer runs the review session (
 
 ## Contributing
 
-- Design decisions live in `.scratch/opencase/PRD.md` — read it before proposing changes to the format, the state machine, or the gates
+- Design decisions live in `docs/PRD.md` — read it before proposing changes to the format, the state machine, or the gates
 - The tool is deliberately thin; prefer the smallest change that works
 - Open an issue first for anything that touches the case format contract or the state machine
 - Run `cargo test` (unit + end-to-end smoke) and `cargo clippy -- -D warnings` before opening a PR
