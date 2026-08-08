@@ -1,7 +1,7 @@
 ---
 id: cli-report
 title: report renders status, coverage and latest runs as markdown
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "Reporting"
 ---
