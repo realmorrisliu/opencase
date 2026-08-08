@@ -1,6 +1,9 @@
 use std::path::Path;
 
-use opencase::{cmd_init, cmd_record, cmd_report, cmd_review, cmd_run, cmd_scriptify, cmd_skill_install, validate_dir};
+use opencase::{
+    cmd_init, cmd_record, cmd_report, cmd_review, cmd_run, cmd_scriptify, cmd_skill_install,
+    validate_dir,
+};
 
 fn usage() -> ! {
     eprintln!(
@@ -31,7 +34,8 @@ fn main() {
     while let Some(a) = args.next() {
         match a.as_str() {
             "--cases" => cases = args.next().unwrap_or_else(|| usage()),
-            "validate" | "review" | "run" | "record" | "report" | "scriptify" | "init" | "skill" => {
+            "validate" | "review" | "run" | "record" | "report" | "scriptify" | "init"
+            | "skill" => {
                 cmd = Some(a);
                 rest = args.collect();
                 break;
@@ -188,11 +192,7 @@ fn main() {
                 eprintln!("opencase: skill subcommands: install (--agent pi|claude|codex|project, --force, --dir <path>)");
                 std::process::exit(2);
             }
-            match cmd_skill_install(
-                agent.as_deref().unwrap_or("pi"),
-                force,
-                dir.as_deref(),
-            ) {
+            match cmd_skill_install(agent.as_deref().unwrap_or("pi"), force, dir.as_deref()) {
                 Ok(msg) => println!("{msg}"),
                 Err(e) => die(e),
             }

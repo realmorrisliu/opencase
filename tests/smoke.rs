@@ -78,21 +78,48 @@ fn full_loop_smoke() {
     let out = opencase(&cases, &["run", "checkout-success"]);
     ok(&out, "run");
     let stdout = String::from_utf8_lossy(&out.stdout);
-    assert!(stdout.contains("## Steps") && stdout.contains("checkout"), "run: {stdout}");
+    assert!(
+        stdout.contains("## Steps") && stdout.contains("checkout"),
+        "run: {stdout}"
+    );
 
     // record pass
-    let out = opencase(&cases, &["record", "checkout-success", "--result", "pass", "--commit", "abc"]);
+    let out = opencase(
+        &cases,
+        &[
+            "record",
+            "checkout-success",
+            "--result",
+            "pass",
+            "--commit",
+            "abc",
+        ],
+    );
     ok(&out, "record pass");
 
     // record fail without category is rejected
     let out = opencase(&cases, &["record", "checkout-success", "--result", "fail"]);
-    assert!(!out.status.success(), "fail without category must be rejected");
+    assert!(
+        !out.status.success(),
+        "fail without category must be rejected"
+    );
     assert!(String::from_utf8_lossy(&out.stderr).contains("--category"));
 
     // record fail with attribution
     let out = opencase(
         &cases,
-        &["record", "checkout-success", "--result", "fail", "--category", "test-bug", "--commit", "abc", "--note", "wrong expectation"],
+        &[
+            "record",
+            "checkout-success",
+            "--result",
+            "fail",
+            "--category",
+            "test-bug",
+            "--commit",
+            "abc",
+            "--note",
+            "wrong expectation",
+        ],
     );
     ok(&out, "record fail");
 

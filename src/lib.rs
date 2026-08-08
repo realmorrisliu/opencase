@@ -64,11 +64,12 @@ impl Case {
             }
             let abs = match insert {
                 Some(i) => pos + marker.len() + i.min(tail.len()),
-                None => pos
-                    + marker.len()
-                    + tail
-                        .find(|c: char| !c.is_whitespace())
-                        .unwrap_or(tail.len()),
+                None => {
+                    pos + marker.len()
+                        + tail
+                            .find(|c: char| !c.is_whitespace())
+                            .unwrap_or(tail.len())
+                }
             };
             let mut out = String::with_capacity(self.body.len() + line.len() + 2);
             out.push_str(&self.body[..abs]);
@@ -144,7 +145,10 @@ pub fn parse_case(path: &Path) -> Result<Case, String> {
     let mut case = Case {
         path: path.to_path_buf(),
         front,
-        body: rest[end + 4..].strip_prefix('\n').unwrap_or(&rest[end + 4..]).to_string(),
+        body: rest[end + 4..]
+            .strip_prefix('\n')
+            .unwrap_or(&rest[end + 4..])
+            .to_string(),
         records: Vec::new(),
         errors: Vec::new(),
     };
@@ -157,8 +161,7 @@ fn is_date(s: &str) -> bool {
     b.len() == 10
         && b[4] == b'-'
         && b[7] == b'-'
-        && b
-            .iter()
+        && b.iter()
             .enumerate()
             .all(|(i, c)| i == 4 || i == 7 || c.is_ascii_digit())
 }
@@ -264,7 +267,10 @@ pub fn cmd_report(dir: &Path) -> Result<String, String> {
         .iter()
         .filter(|c| c.get("mode") == Some("manual"))
         .count();
-    let covered = cases.iter().filter(|c| c.get("covered-by").is_some()).count();
+    let covered = cases
+        .iter()
+        .filter(|c| c.get("covered-by").is_some())
+        .count();
     out.push_str(&format!(
         "\nTotal: {total} | reviewed: {reviewed} | draft: {}\n\
          Manual: {manual} | scripted: {} | automated coverage: {covered}\n\n",
@@ -330,7 +336,10 @@ pub fn validate_dir(dir: &Path) -> (usize, Vec<String>) {
         }
         if let Some(m) = case.get("mode") {
             if !MODES.contains(&m) {
-                problems.push(format!("{}: bad mode '{m}' (need {MODES:?})", path.display()));
+                problems.push(format!(
+                    "{}: bad mode '{m}' (need {MODES:?})",
+                    path.display()
+                ));
             }
         }
         if let Some(id) = case.get("id") {
@@ -351,10 +360,7 @@ pub fn validate_dir(dir: &Path) -> (usize, Vec<String>) {
                 .and_then(|p| p.parent())
                 .unwrap_or_else(|| Path::new("."));
             if !root.join(cb).exists() {
-                problems.push(format!(
-                    "{}: covered-by file missing: {cb}",
-                    path.display()
-                ));
+                problems.push(format!("{}: covered-by file missing: {cb}", path.display()));
             }
         }
         if case.get("mode") == Some("scripted") && case.get("covered-by").is_none() {
@@ -489,9 +495,7 @@ pub fn git_short_sha() -> String {
         .args(["rev-parse", "--short", "HEAD"])
         .output();
     match out {
-        Ok(o) if o.status.success() => {
-            String::from_utf8_lossy(&o.stdout).trim().to_string()
-        }
+        Ok(o) if o.status.success() => String::from_utf8_lossy(&o.stdout).trim().to_string(),
         _ => "unknown".to_string(),
     }
 }
@@ -569,7 +573,11 @@ pub fn cmd_record(
             return Err("--note must not contain '|'".to_string());
         }
     }
-    let mut parts = vec![today()?, commit.map(str::to_string).unwrap_or_else(git_short_sha), result.to_string()];
+    let mut parts = vec![
+        today()?,
+        commit.map(str::to_string).unwrap_or_else(git_short_sha),
+        result.to_string(),
+    ];
     if let Some(cat) = category {
         parts.push(cat.to_string());
     }
@@ -658,7 +666,9 @@ pub fn cmd_scriptify(
         .ok_or_else(|| format!("no case with id '{id}'"))?;
     let c = &mut cases[idx];
     if c.get("status") != Some("reviewed") {
-        return Err(format!("review gate: '{id}' is not reviewed — cannot scriptify"));
+        return Err(format!(
+            "review gate: '{id}' is not reviewed — cannot scriptify"
+        ));
     }
     if rebaseline {
         if c.get("mode") != Some("scripted") {
@@ -713,9 +723,18 @@ pub fn cmd_init(dir: &Path) -> Result<String, String> {
 /// Skills embedded in the binary so `opencase skill install` works without
 /// the repo — version-locked to the release. Source of truth: skills/.
 pub const SKILLS: [(&str, &str); 3] = [
-    ("case-writer", include_str!("../skills/case-writer/SKILL.md")),
-    ("case-reviewer", include_str!("../skills/case-reviewer/SKILL.md")),
-    ("case-executor", include_str!("../skills/case-executor/SKILL.md")),
+    (
+        "case-writer",
+        include_str!("../skills/case-writer/SKILL.md"),
+    ),
+    (
+        "case-reviewer",
+        include_str!("../skills/case-reviewer/SKILL.md"),
+    ),
+    (
+        "case-executor",
+        include_str!("../skills/case-executor/SKILL.md"),
+    ),
 ];
 
 /// `skill install` command: write the embedded skills into the target
@@ -775,8 +794,7 @@ mod tests {
         p
     }
 
-    const VALID_FRONT: &str =
-        "id: login\ntitle: Login\nstatus: draft\nmode: manual\nsource: PRD\n";
+    const VALID_FRONT: &str = "id: login\ntitle: Login\nstatus: draft\nmode: manual\nsource: PRD\n";
 
     fn valid_body() -> &'static str {
         "\n## Steps\n\n1. go\n\n## Expected\n\n- ok\n"
@@ -932,7 +950,9 @@ mod tests {
         write_case(&d, "a", VALID_FRONT, body);
         let (_, problems) = validate_dir(&d);
         assert!(
-            problems.iter().any(|p| p.contains("failed record needs category")),
+            problems
+                .iter()
+                .any(|p| p.contains("failed record needs category")),
             "{:?}",
             problems
         );
@@ -1096,9 +1116,20 @@ mod tests {
     fn record_fail_with_category_appends() {
         let d = tmpdir("rec-fail-cat");
         let p = write_case(&d, "a", &reviewed_manual("a"), valid_body());
-        cmd_record(&d, "a", "fail", Some("product-bug"), Some("c1"), Some("button broken")).unwrap();
+        cmd_record(
+            &d,
+            "a",
+            "fail",
+            Some("product-bug"),
+            Some("c1"),
+            Some("button broken"),
+        )
+        .unwrap();
         let text = fs::read_to_string(&p).unwrap();
-        assert!(text.contains("fail | product-bug | button broken"), "text: {text}");
+        assert!(
+            text.contains("fail | product-bug | button broken"),
+            "text: {text}"
+        );
     }
 
     #[test]
@@ -1122,7 +1153,15 @@ mod tests {
         let d = tmpdir("rec-order");
         let p = write_case(&d, "a", &reviewed_manual("a"), valid_body());
         cmd_record(&d, "a", "pass", None, Some("c1"), None).unwrap();
-        cmd_record(&d, "a", "fail", Some("test-bug"), Some("c2"), Some("wrong expectation")).unwrap();
+        cmd_record(
+            &d,
+            "a",
+            "fail",
+            Some("test-bug"),
+            Some("c2"),
+            Some("wrong expectation"),
+        )
+        .unwrap();
         let c = parse_case(&p).unwrap();
         assert_eq!(c.records.len(), 2);
         assert_eq!(c.records[0].commit, "c1");
@@ -1157,7 +1196,9 @@ mod tests {
         );
         let (_, problems) = validate_dir(&d);
         assert!(
-            problems.iter().any(|p| p.contains("covered-by file missing")),
+            problems
+                .iter()
+                .any(|p| p.contains("covered-by file missing")),
             "{:?}",
             problems
         );
@@ -1174,7 +1215,9 @@ mod tests {
         );
         let (_, problems) = validate_dir(&d);
         assert!(
-            problems.iter().any(|p| p.contains("scripted case needs 'covered-by'")),
+            problems
+                .iter()
+                .any(|p| p.contains("scripted case needs 'covered-by'")),
             "{:?}",
             problems
         );
@@ -1208,7 +1251,15 @@ mod tests {
         fs::create_dir_all(&cases).unwrap();
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_record(&cases, "a", "pass", None, Some("c1"), None).unwrap();
-        cmd_record(&cases, "a", "fail", Some("test-bug"), Some("c2"), Some("wrong expectation")).unwrap();
+        cmd_record(
+            &cases,
+            "a",
+            "fail",
+            Some("test-bug"),
+            Some("c2"),
+            Some("wrong expectation"),
+        )
+        .unwrap();
         fs::create_dir_all(d.join("tests")).unwrap();
         fs::write(d.join("tests/a.spec.ts"), "// stub\n").unwrap();
         let out = cmd_scriptify(&cases, "a", None, false).unwrap();
@@ -1275,7 +1326,9 @@ mod tests {
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
         // change Steps after scriptify (simulating a requirement edit)
-        let text = fs::read_to_string(&p).unwrap().replace("1. go", "1. NEW STEP");
+        let text = fs::read_to_string(&p)
+            .unwrap()
+            .replace("1. go", "1. NEW STEP");
         fs::write(&p, text).unwrap();
         let c = parse_case(&p).unwrap();
         assert!(drift_hint(&c).is_some());
@@ -1305,7 +1358,9 @@ mod tests {
         let (d, cases) = scripted_dir("drift-rebase");
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
-        let text = fs::read_to_string(&p).unwrap().replace("1. go", "1. NEW STEP");
+        let text = fs::read_to_string(&p)
+            .unwrap()
+            .replace("1. go", "1. NEW STEP");
         fs::write(&p, text).unwrap();
         let c = parse_case(&p).unwrap();
         assert!(drift_hint(&c).is_some());
@@ -1391,7 +1446,15 @@ mod tests {
             valid_body(),
         );
         let p = write_case(&d, "d", &reviewed_manual("d"), valid_body());
-        cmd_record(&d, "d", "fail", Some("product-bug"), Some("abc"), Some("broken")).unwrap();
+        cmd_record(
+            &d,
+            "d",
+            "fail",
+            Some("product-bug"),
+            Some("abc"),
+            Some("broken"),
+        )
+        .unwrap();
         let out = cmd_report(&d).unwrap();
         assert!(
             out.contains("Total: 4 | reviewed: 3 | draft: 1"),
@@ -1403,7 +1466,10 @@ mod tests {
         );
         assert!(out.contains("|------|"), "out: {out}");
         assert!(out.contains("fail 20"), "out: {out}");
-        assert!(out.contains("| b | b | reviewed | manual | — | — |"), "out: {out}");
+        assert!(
+            out.contains("| b | b | reviewed | manual | — | — |"),
+            "out: {out}"
+        );
         assert!(out.contains("## Draft (need review)"), "out: {out}");
         assert!(out.contains("- a — a"), "out: {out}");
         assert!(!out.contains("- b —"), "out: {out}");
