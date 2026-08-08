@@ -60,7 +60,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          if curl -fsSL https://index.crates.io/op/e/opencase | grep -q '"vers":"'"$VERSION"'"'; then
+          if curl -fsSL https://index.crates.io/op/en/opencase | grep -q '"vers":"'"$VERSION"'"'; then
             echo "opencase $VERSION already published — skipping"
           else
             cargo publish --locked
