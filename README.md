@@ -62,7 +62,7 @@ Pre-built binaries for macOS (Apple Silicon), Linux (x86_64) and Windows (x86_64
 curl -fsSL https://raw.githubusercontent.com/realmorrisliu/opencase/main/install.sh | sh
 ```
 
-Pin a version: `VERSION=v0.1.1 sh install.sh`. The script installs to `/usr/local/bin` (asks for sudo if needed). Windows users download the `.exe` from the releases page and put it on PATH.
+Pin a version: `VERSION=v0.1.2 sh install.sh`. The script installs to `/usr/local/bin` (asks for sudo if needed). Windows users download the `.exe` from the releases page and put it on PATH.
 
 **From source (requires Rust):**
 

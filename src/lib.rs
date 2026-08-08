@@ -202,12 +202,10 @@ fn parse_record_line(line: &str) -> Result<Record, String> {
         }
         (None, parts.get(3).map(|s| s.to_string()))
     };
-    if parts[2] == "fail" {
-        if !category.as_deref().is_some_and(|c| CATEGORIES.contains(&c)) {
-            return Err(format!(
-                "failed record needs category {CATEGORIES:?}: {line}"
-            ));
-        }
+    if parts[2] == "fail" && !category.as_deref().is_some_and(|c| CATEGORIES.contains(&c)) {
+        return Err(format!(
+            "failed record needs category {CATEGORIES:?}: {line}"
+        ));
     }
     Ok(Record {
         date: parts[0].to_string(),
@@ -1429,7 +1427,7 @@ mod tests {
 
     #[test]
     fn scriptify_sets_drift_baseline() {
-        let (d, cases) = scripted_dir("drift-baseline");
+        let (_d, cases) = scripted_dir("drift-baseline");
         write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
         let c = parse_case(&cases.join("a.md")).unwrap();
@@ -1439,7 +1437,7 @@ mod tests {
 
     #[test]
     fn drift_hint_fires_when_steps_change() {
-        let (d, cases) = scripted_dir("drift-change");
+        let (_d, cases) = scripted_dir("drift-change");
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
         // change Steps after scriptify (simulating a requirement edit)
@@ -1458,7 +1456,7 @@ mod tests {
 
     #[test]
     fn no_drift_hint_when_content_unchanged() {
-        let (d, cases) = scripted_dir("drift-clean");
+        let (_d, cases) = scripted_dir("drift-clean");
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
         // appending an execution record touches the file but not Steps/Expected
@@ -1472,7 +1470,7 @@ mod tests {
 
     #[test]
     fn rebaseline_clears_drift() {
-        let (d, cases) = scripted_dir("drift-rebase");
+        let (_d, cases) = scripted_dir("drift-rebase");
         let p = write_case(&cases, "a", &reviewed_manual("a"), valid_body());
         cmd_scriptify(&cases, "a", None, false).unwrap();
         let text = fs::read_to_string(&p)
@@ -1564,7 +1562,7 @@ mod tests {
             "id: c\ntitle: C\nstatus: reviewed\nmode: scripted\nsource: P\ncovered-by: tests/c.spec.ts\n",
             valid_body(),
         );
-        let p = write_case(&d, "d", &reviewed_manual("d"), valid_body());
+        write_case(&d, "d", &reviewed_manual("d"), valid_body());
         cmd_record(
             &d,
             "d",

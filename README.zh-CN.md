@@ -62,7 +62,7 @@ draft ──review --approve（review 会话）──▶ reviewed
 curl -fsSL https://raw.githubusercontent.com/realmorrisliu/opencase/main/install.sh | sh
 ```
 
-固定版本：`VERSION=v0.1.1 sh install.sh`。脚本装到 `/usr/local/bin`（需要时请求 sudo）。Windows 用户从 releases 页下载 `.exe` 放入 PATH。
+固定版本：`VERSION=v0.1.2 sh install.sh`。脚本装到 `/usr/local/bin`（需要时请求 sudo）。Windows 用户从 releases 页下载 `.exe` 放入 PATH。
 
 **源码安装（需要 Rust）：**
 
