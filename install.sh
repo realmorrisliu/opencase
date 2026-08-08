@@ -29,29 +29,30 @@ esac
 if [ "$VERSION" = "latest" ]; then
   url="https://github.com/$REPO/releases/latest/download/opencase-${os}-${arch}"
 else
-  url="https://github.com/$REPO/releases/${VERSION}/download/opencase-${os}-${arch}"
+  url="https://github.com/$REPO/releases/download/${VERSION}/opencase-${os}-${arch}"
 fi
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
+bin="opencase-${os}-${arch}"
 
 echo "Downloading $url"
 if command -v curl >/dev/null 2>&1; then
-  curl -fsSL "$url" -o "$tmp/opencase"
+  curl -fsSL "$url" -o "$tmp/$bin"
 else
-  wget -q "$url" -O "$tmp/opencase"
+  wget -q "$url" -O "$tmp/$bin"
 fi
 
 echo "Verifying SHA-256 checksum"
 if command -v curl >/dev/null 2>&1; then
-  curl -fsSL "$url.sha256" -o "$tmp/opencase.sha256"
+  curl -fsSL "$url.sha256" -o "$tmp/$bin.sha256"
 else
-  wget -q "$url.sha256" -O "$tmp/opencase.sha256"
+  wget -q "$url.sha256" -O "$tmp/$bin.sha256"
 fi
-(cd "$tmp" && shasum -a 256 -c opencase.sha256)
+(cd "$tmp" && shasum -a 256 -c "$bin.sha256")
 
-chmod +x "$tmp/opencase"
-if install -m 755 "$tmp/opencase" "$DEST/opencase" 2>/dev/null; then
+chmod +x "$tmp/$bin"
+if install -m 755 "$tmp/$bin" "$DEST/opencase" 2>/dev/null; then
   echo "Installed opencase to $DEST/opencase"
 else
   echo "Need permissions to write to $DEST — retrying with sudo"

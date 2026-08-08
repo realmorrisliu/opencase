@@ -703,20 +703,16 @@ pub fn cmd_scriptify(
 /// `init` command: scaffold a cases/ directory with one example case so a
 /// non-Rust user can start without cloning this repo.
 pub fn cmd_init(dir: &Path) -> Result<String, String> {
-    let cases = dir.join("cases");
-    if cases.exists() {
-        return Err(format!(
-            "{} already exists — nothing to do",
-            cases.display()
-        ));
+    if dir.exists() {
+        return Err(format!("{} already exists — nothing to do", dir.display()));
     }
-    fs::create_dir_all(&cases).map_err(|e| format!("{}: {e}", cases.display()))?;
+    fs::create_dir_all(dir).map_err(|e| format!("{}: {e}", dir.display()))?;
     let example = "---\nid: example-happy-path\ntitle: Example happy path\nstatus: draft\nmode: manual\nsource: <your PRD doc + section>\n---\n\n## Steps\n\n1. <first step>\n2. <second step>\n\n## Expected\n\n- <verifiable expectation, one per bullet>\n";
-    fs::write(cases.join("example-happy-path.md"), example)
-        .map_err(|e| format!("{}: {e}", cases.join("example-happy-path.md").display()))?;
+    fs::write(dir.join("example-happy-path.md"), example)
+        .map_err(|e| format!("{}: {e}", dir.join("example-happy-path.md").display()))?;
     Ok(format!(
         "Initialized {} — next: run `opencase review`, then a case-reviewer session before any execution",
-        cases.display()
+        dir.display()
     ))
 }
 
@@ -1380,10 +1376,11 @@ mod tests {
     #[test]
     fn init_scaffolds_valid_cases_dir() {
         let d = tmpdir("init-fresh");
-        let out = cmd_init(&d).unwrap();
+        let target = d.join("cases");
+        let out = cmd_init(&target).unwrap();
         assert!(out.contains("Initialized"), "out: {out}");
-        assert!(d.join("cases/example-happy-path.md").exists());
-        let (count, problems) = validate_dir(&d.join("cases"));
+        assert!(target.join("example-happy-path.md").exists());
+        let (count, problems) = validate_dir(&target);
         assert_eq!(count, 1);
         assert!(problems.is_empty(), "{:?}", problems);
     }
@@ -1391,8 +1388,9 @@ mod tests {
     #[test]
     fn init_refuses_existing_cases_dir() {
         let d = tmpdir("init-exists");
-        fs::create_dir_all(d.join("cases")).unwrap();
-        let err = cmd_init(&d).unwrap_err();
+        let target = d.join("cases");
+        fs::create_dir_all(&target).unwrap();
+        let err = cmd_init(&target).unwrap_err();
         assert!(err.contains("already exists"), "err: {err}");
     }
 
