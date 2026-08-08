@@ -17,3 +17,15 @@ All notable changes to this project will be documented in this file.
 - Zero-dependency Rust CLI: `init` / `validate` / `review` / `run` / `record` / `report` / `scriptify` / `skill`
 - Install script (`install.sh`) with SHA-256 checksum verification; pre-built binaries for macOS/Linux/Windows on every release
 - MIT license, dual-language READMEs, CI (test + clippy + fmt), release workflow
+
+## [0.1.1] - 2026-08-08
+
+### Fixed
+
+- `opencase init` scaffolded `cases/cases` instead of `cases/` — now creates the target directory itself
+- `install.sh` verified checksums against asset names that didn't match the downloaded file; pinned-version URLs now use the correct `releases/download/<tag>/` path
+
+### Changed
+
+- Release pipeline: dropped Intel Mac (darwin-x86_64) builds; added keyless build provenance attestations (`actions/attest`) to release binaries
+- crates.io publish is idempotent (skips when the version already exists)
