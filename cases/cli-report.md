@@ -1,7 +1,7 @@
 ---
 id: cli-report
 title: report renders status, coverage and latest runs as markdown
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "Reporting"
 ---
@@ -16,4 +16,4 @@ source: docs/PRD.md — "Reporting"
 - Output is valid markdown: `# Opencase Report` heading, a counts line (Total/reviewed/draft), a coverage line (Manual/scripted/automated coverage), and a table with header separator
 - The reviewed case's row shows `pass` and the record date; the draft case's row shows `—` for last run
 - The draft case appears in the `## Draft (need review)` section
-- Counts match the actual state of the fixture
+- The counts line reads exactly `Total: 2 | reviewed: 1 | draft: 1` and the coverage line reads `Manual: 2 | scripted: 0 | automated coverage: 0`
