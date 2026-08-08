@@ -1,7 +1,7 @@
 ---
 id: cli-review-gate
 title: Review gate blocks unreviewed cases from run and record
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "State machine and gates"
 ---
@@ -15,8 +15,8 @@ source: docs/PRD.md — "State machine and gates"
 
 ## Expected
 
-- Step 3 exits non-zero and prints a "review gate" message naming the case and the fix (`opencase review <id> --approve`)
-- Step 4 exits non-zero with the same review gate refusal
+- Step 3 exits non-zero and prints a refusal that names the case id and the fix (`opencase review <id> --approve`)
+- Step 4 exits non-zero with the same refusal
 - Neither command modifies the case file (no Executions section appears)
 
 Note: approving the case in this scratch setup is test fixture preparation, not a review decision — the human approval in this case is mechanical.
