@@ -40,6 +40,34 @@ jobs:
           else
             mv opencase opencase-${{ matrix.target }}
           fi
+      - name: Sign and notarize (macOS)
+        if: runner.os == 'macOS' && secrets.MACOS_CERT_P12 != '' && secrets.NOTARY_KEY != ''
+        shell: bash
+        env:
+          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.NOTARY_KEY }}
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.NOTARY_ISSUER }}
+        run: |
+          set -euo pipefail
+          cd target/release
+          KEYCHAIN=opencase.keychain
+          security create-keychain -p temp "$KEYCHAIN"
+          security default-keychain -s "$KEYCHAIN"
+          security unlock-keychain -p temp "$KEYCHAIN"
+          echo "$MACOS_CERT_P12" | base64 --decode > cert.p12
+          security import cert.p12 -k "$KEYCHAIN" -P "$MACOS_CERT_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k temp "$KEYCHAIN"
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN" \
+            | awk '/Developer ID Application/ {print $2; exit}')
+          codesign --force --options runtime --timestamp --sign "$IDENTITY" \
+            opencase-${{ matrix.target }}
+          echo "$NOTARY_KEY" | base64 --decode > notary.p8
+          xcrun notarytool submit opencase-${{ matrix.target }} \
+            --key notary.p8 --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER" --wait
+          xcrun stapler staple opencase-${{ matrix.target }}
       - name: Checksum
         if: runner.os != 'Windows'
         shell: bash
@@ -60,7 +88,7 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          if curl -fsSL https://index.crates.io/op/en/opencase | grep -q '"vers":"'"$VERSION"'"'; then
+          if curl -fsSL https://index.crates.io/op/en/opencase | grep -q '"vers":"'$VERSION'"'; then
             echo "opencase $VERSION already published — skipping"
           else
             cargo publish --locked
