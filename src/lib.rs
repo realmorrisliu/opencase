@@ -177,16 +177,24 @@ fn parse_record_line(line: &str) -> Result<Record, String> {
     if parts[2] != "pass" && parts[2] != "fail" {
         return Err(format!("bad record result '{}': {line}", parts[2]));
     }
-    let category = parts.get(3).map(|s| s.to_string());
-    let note = parts.get(4).map(|s| s.to_string());
+    let (category, note) = if parts[2] == "fail" {
+        (
+            parts.get(3).map(|s| s.to_string()),
+            parts.get(4).map(|s| s.to_string()),
+        )
+    } else {
+        // pass: at most one extra field, which is the note
+        if parts.len() > 4 {
+            return Err(format!("bad record line: {line}"));
+        }
+        (None, parts.get(3).map(|s| s.to_string()))
+    };
     if parts[2] == "fail" {
         if !category.as_deref().is_some_and(|c| CATEGORIES.contains(&c)) {
             return Err(format!(
                 "failed record needs category {CATEGORIES:?}: {line}"
             ));
         }
-    } else if category.is_some() {
-        return Err(format!("pass record must not have a category: {line}"));
     }
     Ok(Record {
         date: parts[0].to_string(),
@@ -837,13 +845,18 @@ mod tests {
     #[test]
     fn parses_record_lines() {
         let d = tmpdir("records");
-        let body = "\n## Executions\n\n- 2025-06-01 | abc123 | pass\n- 2025-06-02 | def456 | fail | product-bug | button unresponsive\n- 2025-06-03 | 111 | fail\n- 2025-06-04 | 222 | pass | test-bug\n- 2025-06-xx | 333 | pass\n";
+        let body = "\n## Executions\n\n- 2025-06-01 | abc123 | pass\n- 2025-06-02 | def456 | fail | product-bug | button unresponsive\n- 2025-06-03 | 111 | fail\n- 2025-06-04 | 222 | pass | note on pass\n- 2025-06-05 | 333 | pass | extra | extra2\n- 2025-06-xx | 444 | pass\n";
         let p = write_case(&d, "login", VALID_FRONT, body);
         let c = parse_case(&p).unwrap();
-        assert_eq!(c.records.len(), 2);
+        assert_eq!(c.records.len(), 3, "errors: {:?}", c.errors);
         assert_eq!(c.records[0].result, "pass");
         assert_eq!(c.records[1].category.as_deref(), Some("product-bug"));
         assert_eq!(c.records[1].note.as_deref(), Some("button unresponsive"));
+        // pass records: the 4th field is the note, not a category
+        assert_eq!(c.records[2].result, "pass");
+        assert_eq!(c.records[2].category, None);
+        assert_eq!(c.records[2].note.as_deref(), Some("note on pass"));
+        // errors: fail without category, pass with two extra fields, bad date
         assert_eq!(c.errors.len(), 3, "errors: {:?}", c.errors);
     }
 
@@ -1126,6 +1139,27 @@ mod tests {
             text.contains("fail | product-bug | button broken"),
             "text: {text}"
         );
+    }
+
+    #[test]
+    fn record_pass_with_note_is_valid() {
+        let d = tmpdir("rec-pass-note");
+        let p = write_case(&d, "a", &reviewed_manual("a"), valid_body());
+        cmd_record(
+            &d,
+            "a",
+            "pass",
+            None,
+            Some("abc"),
+            Some("ran in scratch repo"),
+        )
+        .unwrap();
+        let c = parse_case(&p).unwrap();
+        assert_eq!(c.records.len(), 1);
+        assert_eq!(c.records[0].note.as_deref(), Some("ran in scratch repo"));
+        assert_eq!(c.records[0].category, None);
+        let (_, problems) = validate_dir(&d);
+        assert!(problems.is_empty(), "{:?}", problems);
     }
 
     #[test]

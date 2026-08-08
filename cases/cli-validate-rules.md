@@ -1,7 +1,7 @@
 ---
 id: cli-validate-rules
 title: validate flags schema violations with actionable messages
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "Case file format (contract)"
 ---
@@ -21,3 +21,7 @@ source: docs/PRD.md — "Case file format (contract)"
 - Step 4 reports `bad status 'shipped'` with the valid values listed, exits non-zero
 - Step 6 reports `duplicate id` naming both files, exits non-zero
 - A clean repo reports `N case(s), 0 problem(s)` and exits zero
+
+## Executions
+
+- 2026-08-08 | 3caae2e | pass | executed in scratch repo, all expectations observed

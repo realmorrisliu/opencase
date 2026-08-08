@@ -21,3 +21,4 @@ source: docs/PRD.md — "Failure attribution"
 - Step 4 exits non-zero with a message explaining that --category applies only to failed runs
 - Step 5 succeeds; the file now has exactly two record lines, in append order
 - `opencase validate` reports 0 problems afterwards
+- 2026-08-08 | 3caae2e | pass | executed in scratch repo, all expectations observed

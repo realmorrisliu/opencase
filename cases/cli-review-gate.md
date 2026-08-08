@@ -20,3 +20,7 @@ source: docs/PRD.md — "State machine and gates"
 - Neither command modifies the case file (no Executions section appears)
 
 Note: approving the case in this scratch setup is test fixture preparation, not a review decision — the human approval in this case is mechanical.
+
+## Executions
+
+- 2026-08-08 | 3caae2e | pass | executed in scratch repo, all expectations observed

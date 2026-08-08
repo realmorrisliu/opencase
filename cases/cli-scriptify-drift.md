@@ -23,3 +23,7 @@ source: docs/PRD.md — "Execution model"
 - Step 5 shows the drift warning mentioning `--rebaseline`
 - Step 7 shows no drift warning (baseline refreshed)
 - `opencase record` on the scripted case is refused (scripted results belong to CI)
+
+## Executions
+
+- 2026-08-08 | 3caae2e | pass | executed in scratch repo, all expectations observed
