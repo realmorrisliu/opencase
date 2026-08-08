@@ -42,7 +42,7 @@ cargo package --locked   # or --allow-dirty before commit
 1. Branch → PR → merge to `main` (checks + review must pass)
 2. Fast-forward local `main` to the merged commit
 3. `git tag v<version>` + `git push origin v<version>`
-4. The `release` workflow then: verifies tag matches Cargo.toml → builds 4 platform binaries + SHA-256 checksums → publishes to crates.io → creates the GitHub release
+4. The `release` workflow then: verifies tag matches Cargo.toml → builds the platform binaries + SHA-256 checksums → publishes to crates.io → creates the GitHub release
 
 ## Quick checklist
 

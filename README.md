@@ -54,7 +54,7 @@ draft ──review --approve (review session)──▶ reviewed
 
 ## Install
 
-Pre-built binaries for macOS (arm64/x86_64), Linux (x86_64) and Windows (x86_64) are attached to every [release](https://github.com/realmorrisliu/opencase/releases). No Rust toolchain required.
+Pre-built binaries for macOS (Apple Silicon), Linux (x86_64) and Windows (x86_64) are attached to every [release](https://github.com/realmorrisliu/opencase/releases). No Rust toolchain required.
 
 **One-liner (macOS / Linux):**
 

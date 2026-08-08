@@ -19,7 +19,10 @@ case "$arch" in
   *) echo "unsupported architecture: $arch" >&2; exit 1 ;;
 esac
 case "$os" in
-  darwin | linux) ;;
+  darwin)
+    [ "$arch" = "arm64" ] || { echo "unsupported: Intel Macs (darwin-x86_64) are not built — use an Apple Silicon Mac or build from source" >&2; exit 1; }
+    ;;
+  linux) ;;
   *) echo "unsupported OS: $os (Windows users: download the binary from the releases page)" >&2; exit 1 ;;
 esac
 

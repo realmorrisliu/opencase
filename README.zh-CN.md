@@ -54,7 +54,7 @@ draft ──review --approve（review 会话）──▶ reviewed
 
 ## 安装
 
-每个 [release](https://github.com/realmorrisliu/opencase/releases) 都附带了 macOS（arm64/x86_64）、Linux（x86_64）、Windows（x86_64）的预编译二进制，**不需要 Rust 工具链**。
+每个 [release](https://github.com/realmorrisliu/opencase/releases) 都附带了 macOS（Apple Silicon）、Linux（x86_64）、Windows（x86_64）的预编译二进制，**不需要 Rust 工具链**。
 
 **一行安装（macOS / Linux）：**
 
