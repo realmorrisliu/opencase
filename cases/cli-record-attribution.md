@@ -1,7 +1,7 @@
 ---
 id: cli-record-attribution
 title: Failed records require attribution; pass forbids it
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "Failure attribution"
 ---
@@ -18,6 +18,6 @@ source: docs/PRD.md — "Failure attribution"
 
 - Step 2 exits non-zero, message mentions `--category` and the three categories
 - Step 3 succeeds; the case file gains an `## Executions` line containing date, `abc`, `fail`, `product-bug` and the note
-- Step 4 exits non-zero (`--category is only for failed runs`)
+- Step 4 exits non-zero with a message explaining that --category applies only to failed runs
 - Step 5 succeeds; the file now has exactly two record lines, in append order
 - `opencase validate` reports 0 problems afterwards
