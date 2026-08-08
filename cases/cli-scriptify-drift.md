@@ -1,7 +1,7 @@
 ---
 id: cli-scriptify-drift
 title: scriptify flips a case to scripted and drift detection flags stale scripts
-status: draft
+status: reviewed
 mode: manual
 source: docs/PRD.md — "Execution model"
 ---
@@ -9,7 +9,7 @@ source: docs/PRD.md — "Execution model"
 ## Steps
 
 1. In a scratch repo, create and approve a manual case (fixture setup)
-2. Run `opencase scriptify <id>` with the covered-by file present
+2. Create the script stub at `tests/<id>.spec.ts`, then run `opencase scriptify <id>`
 3. Run `opencase review <id>`
 4. Edit the case's Steps (add a step)
 5. Run `opencase review <id>`
