@@ -50,16 +50,29 @@ impl Case {
     /// section, creating the section if missing. Records stay contiguous.
     pub fn add_record(&mut self, line: &str) -> Result<(), String> {
         let marker = "## Executions";
-        if let Some(pos) = self.body.find(marker) {
+        // Find the header as a standalone line — a body that merely *mentions*
+        // "## Executions" (e.g. an Expected bullet) must not be treated as the
+        // section. This was a real bug: a case describing its own format had
+        // records silently appended into its Expected section.
+        let mut header_pos: Option<usize> = None;
+        let mut offset = 0usize;
+        for l in self.body.lines() {
+            if l.trim() == marker {
+                header_pos = Some(offset);
+                break;
+            }
+            offset += l.len() + 1;
+        }
+        if let Some(pos) = header_pos {
             let tail = &self.body[pos + marker.len()..];
             // Insert after the last record line, or after the header's
             // whitespace if the section is empty.
             let mut insert: Option<usize> = None;
-            let mut offset = 0usize;
+            let mut off = 0usize;
             for l in tail.lines() {
-                offset += l.len() + 1;
+                off += l.len() + 1;
                 if l.starts_with("- ") {
-                    insert = Some(offset);
+                    insert = Some(off);
                 }
             }
             let abs = match insert {
@@ -1213,6 +1226,32 @@ mod tests {
         assert_eq!(c.records.len(), 2);
         assert_eq!(c.records[0].commit, "old");
         assert_eq!(c.records[1].commit, "new");
+    }
+
+    #[test]
+    fn record_ignores_section_mentions_in_body() {
+        // a case whose Expected *mentions* the Executions section must not
+        // have records inserted into its Expected bullets (real dogfood bug)
+        let d = tmpdir("rec-mention");
+        let body = "\n## Steps\n\n1. go\n\n## Expected\n\n- the case gains an `## Executions` line with date\n";
+        let p = write_case(&d, "a", &reviewed_manual("a"), body);
+        cmd_record(&d, "a", "pass", None, Some("c1"), None).unwrap();
+        let text = fs::read_to_string(&p).unwrap();
+        assert!(text.contains("## Executions\n\n- "), "text: {text}");
+        let expected_sec = text
+            .split("## Expected")
+            .nth(1)
+            .unwrap()
+            .split("## Executions")
+            .next()
+            .unwrap();
+        assert!(
+            !expected_sec.contains("- 2026-"),
+            "record leaked into Expected: {text}"
+        );
+        let c = parse_case(&p).unwrap();
+        assert_eq!(c.records.len(), 1);
+        assert_eq!(c.records[0].commit, "c1");
     }
 
     #[test]

@@ -122,7 +122,7 @@ drift-sha: 0c3e6a...           # set by scriptify; review compares Steps/Expecte
 ```
 
 - Frontmatter is deliberately flat: `key: value`, values contain no newlines or `|`
-- Record lines: `- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`; failed lines must carry attribution
+- Record lines: `- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`; failed lines must carry attribution, on pass lines the first extra field is the note
 - `covered-by` resolves against the repo root (e.g. `tests/login.spec.ts`); validate checks the file exists
 
 ## Command reference

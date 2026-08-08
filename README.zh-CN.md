@@ -122,7 +122,7 @@ drift-sha: 0c3e6a...           # scriptify 写入；review 用它对比 Steps/Ex
 ```
 
 - frontmatter 刻意扁平：`key: value`，值不含换行、`|`
-- 执行记录行：`- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`，失败行必须带归因
+- 执行记录行：`- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`，失败行必须带归因；pass 行的第一个附加字段是 note
 - `covered-by` 相对仓库根解析（如 `tests/login.spec.ts`），validate 检查文件存在
 
 ## 命令参考

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Pass records with a note were misparsed as carrying a category — field positions are now unambiguous by result
+- Records could be silently appended into the Expected section of a case that mentions "## Executions" in its body — section headers are now matched as standalone lines
+
 ## [0.1.0] - 2026-08-08
 
 ### Added

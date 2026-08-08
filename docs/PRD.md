@@ -73,7 +73,7 @@ drift-sha: 0c3e6a...                # set by scriptify; review compares Steps/Ex
 ```
 
 - Frontmatter is deliberately **flat `key: value`**; values contain no newlines or `|`; the body has exactly three sections: `Steps` / `Expected` / `Executions` (the record area is CLI-maintained, appended at the end of the file).
-- Execution record line format: `- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`. Failed lines must carry a category.
+- Execution record line format: `- YYYY-MM-DD | <commit> | pass|fail [ | category ] [ | note ]`. Failed lines must carry a category; on pass lines the first extra field is the note (field positions unambiguous by result).
 
 ### State machine and gates
 
